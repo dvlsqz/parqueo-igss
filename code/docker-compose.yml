@@ -1,0 +1,41 @@
+version: '3.7'
+services:
+ parqueo-db:
+  image: mysql:5.7
+  environment:
+   MYSQL_ROOT_PASSWORD: Igss.2022
+   MYSQL_DATABASE: parqueo_dev
+   MYSQL_USER: usr_laravel
+   MYSQL_PASSWORD: Usr.igss.2022
+  ports:
+   - 33077:3306
+  volumes:
+   - ./database/schemas/:/var/lib/mysql
+  networks:
+   laravel_prod_net:
+    ipv4_address: 171.23.100.11
+ parqueo-dev:
+  build:
+   context: ./
+   dockerfile: Dockerfile
+  ports:
+   - 8900:80
+  volumes:
+   - ./code-dev:/var/www
+   - ./code-dev/public:/var/www/html
+  networks:
+   laravel_prod_net:
+    ipv4_address: 171.23.100.12
+  depends_on:
+   - parqueo-db
+volumes:
+ code-dev:
+ database:
+networks:
+ laravel_prod_net:
+  driver: bridge
+  ipam:
+   driver: default
+   config:
+    -
+     subnet: 171.23.100.0/24
